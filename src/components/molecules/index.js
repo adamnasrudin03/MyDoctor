@@ -10,6 +10,7 @@ import NewsItem from './NewsItem';
 import RatedDoctor from './RatedDoctor';
 import List from './List';
 import ListHospitals from './ListHospitals';
+import Loading from './Loading';
 
 export {
   BottomNavigator,
@@ -22,6 +23,7 @@ export {
   InputChat,
   List,
   ListHospitals,
+  Loading,
   NewsItem,
   RatedDoctor,
 };
