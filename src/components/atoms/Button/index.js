@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, Text, TouchableOpacity} from 'react-native';
+import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {colors, fonts} from '../../../utils';
 import IconOnly from './IconOnly';
 import ButtonIconSend from './ButtonIconSend';
@@ -10,6 +10,13 @@ const Button = ({type, title, onPress, icon, disable}) => {
   }
   if (type === 'icon-only') {
     return <IconOnly icon={icon} onPress={onPress} />;
+  }
+  if (disable) {
+    return (
+      <View style={styles.disabledBg}>
+        <Text style={styles.disabledText}> {title}</Text>
+      </View>
+    );
   }
   return (
     <TouchableOpacity style={styles.container(type)} onPress={onPress}>
@@ -29,6 +36,17 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderRadius: 10,
   }),
+  disabledBg: {
+    backgroundColor: colors.button.disable.background,
+    paddingVertical: 10,
+    borderRadius: 10,
+  },
+  disabledText: {
+    fontSize: 18,
+    fontFamily: fonts.primary[600],
+    textAlign: 'center',
+    color: colors.button.disable.text,
+  },
   text: type => ({
     fontSize: 18,
     fontFamily: fonts.primary[600],
