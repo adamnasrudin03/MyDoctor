@@ -18,10 +18,20 @@ const Register = ({navigation}) => {
   const onContinue = () => {
     console.log(form);
     setLoading(true);
+
+    const data = {
+      fullName: form.fullName,
+      profession: form.profession,
+      email: form.email,
+    };
+
     Firebase.auth()
       .createUserWithEmailAndPassword(form.email, form.password)
       .then(success => {
         console.log('Register Succes : ', success);
+        Firebase.database()
+          .ref('/users' + success.user.uid + '/')
+          .set(data);
         setForm('reset');
         setLoading(false);
       })
