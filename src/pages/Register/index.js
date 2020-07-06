@@ -1,9 +1,10 @@
 import React from 'react';
-import {StyleSheet, Text, View, ScrollView} from 'react-native';
+import {StyleSheet, View, ScrollView} from 'react-native';
 
 import {Header} from '../../components/molecules';
 import {Input, Button, Gap} from '../../components/atoms';
 import {colors, useForm} from '../../utils';
+import Firebase from '../../config/Firebase';
 const Register = ({navigation}) => {
   const [form, setForm] = useForm({
     fullName: '',
@@ -12,8 +13,17 @@ const Register = ({navigation}) => {
     password: '',
   });
 
-  const onContinue = ({navigation}) => {
+  const onContinue = () => {
     console.log(form);
+    Firebase.auth()
+      .createUserWithEmailAndPassword(form.email, form.password)
+      .then(success => {
+        console.log('Register Succes : ', success);
+      })
+      .catch(error => {
+        const errorMessage = error.message;
+        console.log('Register Error : ', errorMessage);
+      });
     //navigation.navigate('UploadPhoto');
   };
 
