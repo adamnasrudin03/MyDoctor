@@ -1,9 +1,10 @@
 import React, {useState} from 'react';
 import {StyleSheet, View, ScrollView} from 'react-native';
-
 import {Input, Button, Gap, Header, Loading} from '../../components';
 import {colors, useForm} from '../../utils';
 import Firebase from '../../config/Firebase';
+import {showMessage, hideMessage} from 'react-native-flash-message';
+
 const Register = ({navigation}) => {
   const [form, setForm] = useForm({
     fullName: '',
@@ -21,12 +22,18 @@ const Register = ({navigation}) => {
       .createUserWithEmailAndPassword(form.email, form.password)
       .then(success => {
         console.log('Register Succes : ', success);
-
+        setForm('reset');
         setLoading(false);
       })
       .catch(error => {
         const errorMessage = error.message;
         console.log('Register Error : ', errorMessage);
+        showMessage({
+          message: errorMessage,
+          type: 'error',
+          backgroundColor: colors.error,
+          color: colors.white,
+        });
         setLoading(false);
       });
     //navigation.navigate('UploadPhoto');
