@@ -4,6 +4,7 @@ import {Header, Button, Link, Gap} from '../../components';
 import {ILNullPhoto, IconAddPhoto, IconRemovePhoto} from '../../assets';
 import {colors, fonts} from '../../utils';
 import ImagePicker from 'react-native-image-picker';
+import {showMessage} from 'react-native-flash-message';
 
 const UploadPhoto = ({navigation}) => {
   const [hasPhoto, setHasPhoto] = useState(false);
@@ -12,9 +13,18 @@ const UploadPhoto = ({navigation}) => {
   const getImage = () => {
     ImagePicker.launchImageLibrary({}, response => {
       console.log('respn : ', response);
-      const source = {uri: response.uri};
-      setPhoto(source);
-      setHasPhoto(true);
+      if (response.didCancel || response.error) {
+        showMessage({
+          message: 'Sepertinya anda tidak jadi memilih photo ?',
+          type: 'error',
+          backgroundColor: colors.error,
+          color: colors.white,
+        });
+      } else {
+        const source = {uri: response.uri};
+        setPhoto(source);
+        setHasPhoto(true);
+      }
     });
   };
   return (
