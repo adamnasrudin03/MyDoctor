@@ -2,10 +2,9 @@ import React, {useState, useEffect} from 'react';
 import {StyleSheet, View, ScrollView} from 'react-native';
 import {Header, Gap, Profile, Input, Button} from '../../components';
 import {colors, getData, storeData} from '../../utils';
-import {DummyUser, ILNullPhoto} from '../../assets';
+import {ILNullPhoto} from '../../assets';
 import {Firebase} from './../../config';
 import {showMessage} from 'react-native-flash-message';
-import {Loading} from '../../components';
 import ImagePicker from 'react-native-image-picker';
 
 const UpdateProfile = ({navigation}) => {
@@ -28,6 +27,40 @@ const UpdateProfile = ({navigation}) => {
   }, []);
 
   const update = () => {
+    if (password.length > 0) {
+      if (password.length < 6) {
+        showMessage({
+          message: 'Password Harus Lebih Dari 6 karakter',
+          type: 'danger',
+          backgroundColor: colors.error,
+          color: colors.white,
+        });
+      } else {
+        updatePassword();
+        updateDataProfile();
+        navigation.replace('MainApp');
+      }
+    } else {
+      updateDataProfile;
+      navigation.replace('MainApp');
+    }
+  };
+
+  const updatePassword = () => {
+    Firebase.auth().onAuthStateChanged(user => {
+      if (user) {
+        user.updatePassword(password).catch(error => {
+          showMessage({
+            message: error.message,
+            type: 'danger',
+            backgroundColor: colors.error,
+            color: colors.white,
+          });
+        });
+      }
+    });
+  };
+  const updateDataProfile = () => {
     const data = profile;
     data.photo = photoForDB;
     Firebase.database()
@@ -46,7 +79,6 @@ const UpdateProfile = ({navigation}) => {
         });
       });
   };
-
   const changeText = (key, value) => {
     setProfile({
       ...profile,
@@ -96,7 +128,11 @@ const UpdateProfile = ({navigation}) => {
           <Gap height={24} />
           <Input label="E - Mail" value={profile.email} disable />
           <Gap height={24} />
-          <Input label="Password" value={password} />
+          <Input
+            label="Password"
+            value={password}
+            onChangeText={value => setPassword(value)}
+          />
           <Gap height={40} />
           <Button title=" Save Profile " onPress={update} />
         </View>
