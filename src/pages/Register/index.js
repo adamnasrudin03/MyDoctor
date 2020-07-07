@@ -31,7 +31,7 @@ const Register = ({navigation}) => {
         Firebase.database()
           .ref('users/' + success.user.uid + '/')
           .set(data);
-        storeData('users', data);
+        storeData('user', data);
         setForm('reset');
         setLoading(false);
         navigation.navigate('UploadPhoto', data);
