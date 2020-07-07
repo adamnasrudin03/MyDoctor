@@ -3,6 +3,8 @@ import {StyleSheet, Text, View} from 'react-native';
 import {Header, Profile, List, Gap} from '../../components';
 import {colors, useForm, getData} from '../../utils';
 import {DummyUser, ILNullPhoto} from '../../assets';
+import {Firebase} from '../../config';
+import {showMessage} from 'react-native-flash-message';
 
 const UserProfile = ({navigation}) => {
   const [profile, setProfile] = useState({
@@ -17,6 +19,21 @@ const UserProfile = ({navigation}) => {
       setProfile(data);
     });
   }, []);
+  const logout = () => {
+    Firebase.auth()
+      .signOut()
+      .then(() => {
+        navigation.replace('GetStarted');
+      })
+      .catch(error => {
+        showMessage({
+          message: error.message,
+          type: 'danger',
+          backgroundColor: colors.error,
+          color: colors.white,
+        });
+      });
+  };
   return (
     <View style={styles.page}>
       <Header title="Profile" onPress={() => navigation.goBack()} />
@@ -43,7 +60,13 @@ const UserProfile = ({navigation}) => {
         type="next"
       />
       <List icon="rate" name="Rate" desc="Last Update Yasterday" type="next" />
-      <List icon="help" name="Help" desc="Last Update Yasterday" type="next" />
+      <List
+        icon="help"
+        name="Logout"
+        desc="Exit MyDoctor App"
+        type="next"
+        onPress={logout}
+      />
     </View>
   );
 };
