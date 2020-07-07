@@ -29,7 +29,7 @@ const Register = ({navigation}) => {
           uid: success.user.uid,
         };
         Firebase.database()
-          .ref('users/' + success.user.uid + '/')
+          .ref(`users/${success.user.uid}/`)
           .set(data);
         storeData('user', data);
         setForm('reset');
@@ -41,7 +41,7 @@ const Register = ({navigation}) => {
         console.log('Register Error : ', errorMessage);
         showMessage({
           message: errorMessage,
-          type: 'error',
+          type: 'danger',
           backgroundColor: colors.error,
           color: colors.white,
         });
