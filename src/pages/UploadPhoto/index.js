@@ -15,7 +15,7 @@ const UploadPhoto = ({navigation, route}) => {
 
   const getImage = () => {
     ImagePicker.launchImageLibrary(
-      {quality: 0.5, maxHeight: 200, maxWidth: 200},
+      {quality: 0.7, maxHeight: 200, maxWidth: 200},
       response => {
         console.log('respn : ', response);
         if (response.didCancel || response.error) {
