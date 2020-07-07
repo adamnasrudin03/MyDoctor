@@ -5,27 +5,44 @@ import {ILNullPhoto, IconAddPhoto, IconRemovePhoto} from '../../assets';
 import {colors, fonts} from '../../utils';
 import ImagePicker from 'react-native-image-picker';
 import {showMessage} from 'react-native-flash-message';
+import Firebase from '../../config/Firebase';
 
-const UploadPhoto = ({navigation}) => {
+const UploadPhoto = ({navigation, route}) => {
+  const {fullName, profession, uid} = route.params;
   const [hasPhoto, setHasPhoto] = useState(false);
   const [photo, setPhoto] = useState(ILNullPhoto);
+  const [photoForDB, setPhotoForDB] = useState('');
 
   const getImage = () => {
-    ImagePicker.launchImageLibrary({}, response => {
-      console.log('respn : ', response);
-      if (response.didCancel || response.error) {
-        showMessage({
-          message: 'Sepertinya anda tidak jadi memilih photo ?',
-          type: 'error',
-          backgroundColor: colors.error,
-          color: colors.white,
-        });
-      } else {
-        const source = {uri: response.uri};
-        setPhoto(source);
-        setHasPhoto(true);
-      }
-    });
+    ImagePicker.launchImageLibrary(
+      {quality: 0.5, maxHeight: 200, maxWidth: 200},
+      response => {
+        console.log('respn : ', response);
+        if (response.didCancel || response.error) {
+          showMessage({
+            message: 'Sepertinya anda tidak jadi memilih photo ?',
+            type: 'error',
+            backgroundColor: colors.error,
+            color: colors.white,
+          });
+        } else {
+          const source = {uri: response.uri};
+          console.log('getImage : ', response.data);
+          setPhotoForDB(`data:${response.type};base64, ${response.data}`);
+          setPhoto(source);
+          setHasPhoto(true);
+        }
+      },
+    );
+  };
+
+  const uploadAndCountinue = () => {
+    console.log('upload and continue : ', photoForDB);
+    Firebase.database()
+      .ref('users/' + uid + '/')
+      .update({photo: photoForDB});
+
+    navigation.replace('MainApp');
   };
   return (
     <View style={styles.page}>
@@ -37,14 +54,14 @@ const UploadPhoto = ({navigation}) => {
             {!hasPhoto && <IconAddPhoto style={styles.addPhoto} />}
             {hasPhoto && <IconRemovePhoto style={styles.addPhoto} />}
           </TouchableOpacity>
-          <Text style={styles.name}>Adam Nasrudin</Text>
-          <Text style={styles.proffesion}>Product Manager</Text>
+          <Text style={styles.name}>{fullName}</Text>
+          <Text style={styles.proffesion}> {profession} </Text>
         </View>
         <View>
           <Button
             disable={!hasPhoto}
             title="Upload and Continue"
-            onPress={() => navigation.replace('MainApp')}
+            onPress={uploadAndCountinue}
           />
           <Gap height={30} />
           <Link
