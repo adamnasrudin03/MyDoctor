@@ -3,9 +3,15 @@ import {ScrollView, StyleSheet, Text, View} from 'react-native';
 
 import {ILLogo} from '../../assets';
 import {Input, Button, Link, Gap} from '../../components/atoms';
-import {colors, fonts, useForm, storeData} from '../../utils';
+import {
+  colors,
+  fonts,
+  useForm,
+  storeData,
+  showError,
+  showSuccess,
+} from '../../utils';
 import {Firebase} from './../../config';
-import {showMessage} from 'react-native-flash-message';
 import {useDispatch} from 'react-redux';
 
 const Login = ({navigation}) => {
@@ -17,29 +23,23 @@ const Login = ({navigation}) => {
     Firebase.auth()
       .signInWithEmailAndPassword(form.email, form.password)
       .then(res => {
-        console.log('success :', res);
         dispatch({type: 'SET_LOADING', value: false});
 
         Firebase.database()
           .ref(`users/${res.user.uid}/`)
           .once('value')
           .then(resDB => {
-            console.log(' Data user : ', resDB.val());
             if (resDB.val()) {
               storeData('user', resDB.val());
+              showSuccess('Login Successfully');
               navigation.replace('MainApp');
             }
           });
       })
       .catch(error => {
         dispatch({type: 'SET_LOADING', value: false});
-        console.log('Error :', error);
-        showMessage({
-          message: error.message,
-          type: 'danger',
-          backgroundColor: colors.error,
-          color: colors.white,
-        });
+
+        showError(error.message);
       });
   };
   return (

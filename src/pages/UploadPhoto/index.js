@@ -2,9 +2,8 @@ import React, {useState} from 'react';
 import {StyleSheet, Text, View, Image, TouchableOpacity} from 'react-native';
 import {Header, Button, Link, Gap} from '../../components';
 import {ILNullPhoto, IconAddPhoto, IconRemovePhoto} from '../../assets';
-import {colors, fonts, storeData} from '../../utils';
+import {colors, fonts, storeData, showError, showSuccess} from '../../utils';
 import ImagePicker from 'react-native-image-picker';
-import {showMessage} from 'react-native-flash-message';
 import Firebase from '../../config/Firebase';
 
 const UploadPhoto = ({navigation, route}) => {
@@ -17,17 +16,10 @@ const UploadPhoto = ({navigation, route}) => {
     ImagePicker.launchImageLibrary(
       {quality: 0.7, maxHeight: 200, maxWidth: 200},
       response => {
-        console.log('respn : ', response);
         if (response.didCancel || response.error) {
-          showMessage({
-            message: 'Sepertinya anda tidak jadi memilih photo ?',
-            type: 'error',
-            backgroundColor: colors.error,
-            color: colors.white,
-          });
+          showError("You didn't choose photos?");
         } else {
           const source = {uri: response.uri};
-          console.log('getImage : ', response.data);
           setPhotoForDB(`data:${response.type};base64, ${response.data}`);
           setPhoto(source);
           setHasPhoto(true);
@@ -37,15 +29,12 @@ const UploadPhoto = ({navigation, route}) => {
   };
 
   const uploadAndCountinue = () => {
-    console.log('upload and continue : ', photoForDB);
     Firebase.database()
       .ref('users/' + uid + '/')
       .update({photo: photoForDB});
     const data = route.params;
     data.photo = photoForDB;
     storeData('user', data);
-
-    console.log('Local Storage : ', data);
 
     navigation.replace('MainApp');
   };

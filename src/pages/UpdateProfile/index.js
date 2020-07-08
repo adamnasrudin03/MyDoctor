@@ -1,10 +1,9 @@
 import React, {useState, useEffect} from 'react';
 import {StyleSheet, View, ScrollView} from 'react-native';
 import {Header, Gap, Profile, Input, Button} from '../../components';
-import {colors, getData, storeData} from '../../utils';
+import {colors, getData, storeData, showError, showSuccess} from '../../utils';
 import {ILNullPhoto} from '../../assets';
 import {Firebase} from './../../config';
-import {showMessage} from 'react-native-flash-message';
 import ImagePicker from 'react-native-image-picker';
 
 const UpdateProfile = ({navigation}) => {
@@ -29,19 +28,14 @@ const UpdateProfile = ({navigation}) => {
   const update = () => {
     if (password.length > 0) {
       if (password.length < 6) {
-        showMessage({
-          message: 'Password Harus Lebih Dari 6 karakter',
-          type: 'danger',
-          backgroundColor: colors.error,
-          color: colors.white,
-        });
+        showError('Password must be more than 6 characters');
       } else {
         updatePassword();
         updateDataProfile();
         navigation.replace('MainApp');
       }
     } else {
-      updateDataProfile;
+      updateDataProfile();
       navigation.replace('MainApp');
     }
   };
@@ -50,12 +44,7 @@ const UpdateProfile = ({navigation}) => {
     Firebase.auth().onAuthStateChanged(user => {
       if (user) {
         user.updatePassword(password).catch(error => {
-          showMessage({
-            message: error.message,
-            type: 'danger',
-            backgroundColor: colors.error,
-            color: colors.white,
-          });
+          showError(error.message);
         });
       }
     });
@@ -67,16 +56,12 @@ const UpdateProfile = ({navigation}) => {
       .ref(`users/${profile.uid}/`)
       .update(data)
       .then(() => {
-        console.log('succes');
         storeData('user', data);
+
+        showSuccess('Profile updated successfully');
       })
       .catch(error => {
-        showMessage({
-          message: error.message,
-          type: 'danger',
-          backgroundColor: colors.error,
-          color: colors.white,
-        });
+        showError(error.message);
       });
   };
   const changeText = (key, value) => {
@@ -89,17 +74,10 @@ const UpdateProfile = ({navigation}) => {
     ImagePicker.launchImageLibrary(
       {quality: 0.7, maxHeight: 200, maxWidth: 200},
       response => {
-        console.log('respn : ', response);
         if (response.didCancel || response.error) {
-          showMessage({
-            message: 'Sepertinya anda tidak jadi memilih photo ?',
-            type: 'error',
-            backgroundColor: colors.error,
-            color: colors.white,
-          });
+          showError("You didn't choose photos?");
         } else {
           const source = {uri: response.uri};
-          console.log('getImage : ', response.data);
           setPhotoForDB(`data:${response.type};base64, ${response.data}`);
           setPhoto(source);
         }

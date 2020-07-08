@@ -9,8 +9,6 @@ const Splash = ({navigation}) => {
     setTimeout(() => {
       Firebase.auth().onAuthStateChanged(user => {
         if (user) {
-          console.log('user lagi login : ', user);
-
           navigation.replace('MainApp');
         } else {
           navigation.replace('GetStarted');

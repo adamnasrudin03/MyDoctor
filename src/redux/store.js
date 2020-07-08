@@ -1,10 +1,11 @@
 import {createStore} from 'redux';
 
 const initialState = {
-  data: null,
   loading: false,
-  error: null,
+  name: 'Adam Nasrudin',
+  address: 'Bekasi',
 };
+
 const reducer = (state = initialState, action) => {
   if (action.type === 'SET_LOADING') {
     return {
@@ -12,6 +13,7 @@ const reducer = (state = initialState, action) => {
       loading: action.value,
     };
   }
+
   return state;
 };
 

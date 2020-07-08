@@ -2,7 +2,7 @@ import React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import Router from './router';
 import FlashMessage from 'react-native-flash-message';
-import {Provaider, useSelector} from 'react-redux';
+import {Provider, useSelector} from 'react-redux';
 import {Loading} from './components';
 import store from './redux/store';
 
@@ -21,9 +21,9 @@ const MainApp = () => {
 
 const App = () => {
   return (
-    <Provaider store={store}>
+    <Provider store={store}>
       <MainApp />
-    </Provaider>
+    </Provider>
   );
 };
 

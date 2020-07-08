@@ -1,10 +1,9 @@
 import React, {useState, useEffect} from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import {Header, Profile, List, Gap} from '../../components';
-import {colors, useForm, getData} from '../../utils';
-import {DummyUser, ILNullPhoto} from '../../assets';
+import {colors, getData, showError, showSuccess} from '../../utils';
+import {ILNullPhoto} from '../../assets';
 import {Firebase} from '../../config';
-import {showMessage} from 'react-native-flash-message';
 
 const UserProfile = ({navigation}) => {
   const [profile, setProfile] = useState({
@@ -12,6 +11,7 @@ const UserProfile = ({navigation}) => {
     profession: '',
     photo: ILNullPhoto,
   });
+
   useEffect(() => {
     getData('user').then(res => {
       const data = res;
@@ -19,21 +19,19 @@ const UserProfile = ({navigation}) => {
       setProfile(data);
     });
   }, []);
+
   const logout = () => {
     Firebase.auth()
       .signOut()
       .then(() => {
+        showSuccess('log out Success');
         navigation.replace('GetStarted');
       })
       .catch(error => {
-        showMessage({
-          message: error.message,
-          type: 'danger',
-          backgroundColor: colors.error,
-          color: colors.white,
-        });
+        showError(error.showMessage);
       });
   };
+
   return (
     <View style={styles.page}>
       <Header title="Profile" onPress={() => navigation.goBack()} />

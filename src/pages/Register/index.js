@@ -1,9 +1,9 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {StyleSheet, View, ScrollView} from 'react-native';
-import {Input, Button, Gap, Header, Loading} from '../../components';
-import {colors, useForm, storeData} from '../../utils';
+import {Input, Button, Gap, Header} from '../../components';
+import {colors, useForm, storeData, showError} from '../../utils';
 import Firebase from '../../config/Firebase';
-import {showMessage, hideMessage} from 'react-native-flash-message';
+import {useDispatch} from 'react-redux';
 
 const Register = ({navigation}) => {
   const [form, setForm] = useForm({
@@ -13,11 +13,10 @@ const Register = ({navigation}) => {
     password: '',
   });
 
-  const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
 
   const onContinue = () => {
-    console.log(form);
-    setLoading(true);
+    dispatch({type: 'SET_LOADING', value: true});
 
     Firebase.auth()
       .createUserWithEmailAndPassword(form.email, form.password)
@@ -33,59 +32,49 @@ const Register = ({navigation}) => {
           .set(data);
         storeData('user', data);
         setForm('reset');
-        setLoading(false);
+        dispatch({type: 'SET_LOADING', value: false});
         navigation.navigate('UploadPhoto', data);
       })
       .catch(error => {
-        const errorMessage = error.message;
-        console.log('Register Error : ', errorMessage);
-        showMessage({
-          message: errorMessage,
-          type: 'danger',
-          backgroundColor: colors.error,
-          color: colors.white,
-        });
-        setLoading(false);
+        showError(error.message);
+        dispatch({type: 'SET_LOADING', value: false});
       });
   };
 
   return (
-    <>
-      <View style={styles.page}>
-        <Header title="Register" onPress={() => navigation.goBack()} />
-        <View style={styles.content}>
-          <ScrollView showsVerticalScrollIndicator={false}>
-            <Input
-              label="Full Name"
-              value={form.fullName}
-              onChangeText={value => setForm('fullName', value)}
-            />
-            <Gap height={24} />
-            <Input
-              label="Profession"
-              value={form.profession}
-              onChangeText={value => setForm('profession', value)}
-            />
-            <Gap height={24} />
-            <Input
-              label="E-mail"
-              value={form.email}
-              onChangeText={value => setForm('email', value)}
-            />
-            <Gap height={24} />
-            <Input
-              label="Password"
-              value={form.password}
-              onChangeText={value => setForm('password', value)}
-              secureTextEntry
-            />
-            <Gap height={40} />
-            <Button title="Countinue" onPress={onContinue} />
-          </ScrollView>
-        </View>
+    <View style={styles.page}>
+      <Header title="Register" onPress={() => navigation.goBack()} />
+      <View style={styles.content}>
+        <ScrollView showsVerticalScrollIndicator={false}>
+          <Input
+            label="Full Name"
+            value={form.fullName}
+            onChangeText={value => setForm('fullName', value)}
+          />
+          <Gap height={24} />
+          <Input
+            label="Profession"
+            value={form.profession}
+            onChangeText={value => setForm('profession', value)}
+          />
+          <Gap height={24} />
+          <Input
+            label="E-mail"
+            value={form.email}
+            onChangeText={value => setForm('email', value)}
+          />
+          <Gap height={24} />
+          <Input
+            label="Password"
+            value={form.password}
+            onChangeText={value => setForm('password', value)}
+            secureTextEntry
+          />
+          <Gap height={40} />
+          <Button title="Countinue" onPress={onContinue} />
+        </ScrollView>
       </View>
-      {loading && <Loading />}
-    </>
+    </View>
   );
 };
 
