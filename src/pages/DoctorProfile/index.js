@@ -1,8 +1,7 @@
 import React from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 
 import {Header, Profile, ProfileItem, Button, Gap} from '../../components';
-import {DummyDoctor4} from '../../assets';
 import {colors} from '../../utils';
 
 const DoctorProfile = ({navigation, route}) => {
