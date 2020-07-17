@@ -2,9 +2,8 @@ import React from 'react';
 import {StyleSheet, Text, View, Image} from 'react-native';
 import {colors, fonts} from '../../../utils';
 import {Button, Gap} from '../../atoms';
-import {DummyDoctor9} from '../../../assets';
 
-const DarkProfile = ({onPress, type}) => {
+const DarkProfile = ({onPress, desc, photo, title, type}) => {
   if (type === 'dark-profile') {
     return <DarkProfile />;
   }
@@ -12,10 +11,10 @@ const DarkProfile = ({onPress, type}) => {
     <View style={styles.container}>
       <Button type="icon-only" icon="back-light" onPress={onPress} />
       <View style={styles.content}>
-        <Text style={styles.name}>Alifah Nurdianti</Text>
-        <Text style={styles.desc}> Dokter Anak</Text>
+        <Text style={styles.name}> {title} </Text>
+        <Text style={styles.desc}> {desc}</Text>
       </View>
-      <Image source={DummyDoctor9} style={styles.avatar} />
+      <Image source={photo} style={styles.avatar} />
       <Gap height={24} />
     </View>
   );
