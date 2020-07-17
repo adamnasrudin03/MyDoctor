@@ -28,7 +28,9 @@ const Doctor = ({navigation}) => {
       .once('value')
       .then(res => {
         if (res.val()) {
-          setNews(res.val());
+          const data = res.val();
+          const filterData = data.filter(el => el !== null);
+          setNews(filterData);
         }
       })
       .catch(error => {
@@ -42,7 +44,9 @@ const Doctor = ({navigation}) => {
       .once('value')
       .then(res => {
         if (res.val()) {
-          setCategoryDoctor(res.val());
+          const data = res.val();
+          const filterData = data.filter(el => el !== null);
+          setCategoryDoctor(filterData);
         }
       })
       .catch(error => {
@@ -94,7 +98,7 @@ const Doctor = ({navigation}) => {
                 {categoryDoctor.map(item => {
                   return (
                     <DoctorCategory
-                      key={item.id}
+                      key={`category-${item.id}`}
                       category={item.category}
                       onPress={() => navigation.navigate('ChooseDoctor', item)}
                     />
