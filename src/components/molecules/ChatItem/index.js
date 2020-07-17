@@ -6,7 +6,7 @@ const ChatItem = ({isMe, text, date, photo}) => {
   if (isMe === true) {
     return <IsMe text={text} date={date} />;
   }
-  return <Other />;
+  return <Other text={text} date={date} photo={photo} />;
 };
 
 export default ChatItem;

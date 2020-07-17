@@ -24,7 +24,6 @@ const Chatting = ({navigation, route}) => {
     Firebase.database()
       .ref(urlDatabase)
       .on('value', snapshot => {
-        console.log('snapshot chat :', snapshot.val());
         if (snapshot.val()) {
           const dataSnapshot = snapshot.val();
           const allDataChat = [];
@@ -95,12 +94,14 @@ const Chatting = ({navigation, route}) => {
               <View key={chat.id}>
                 <Text style={styles.chatDate}>{chat.id}</Text>
                 {chat.data.map(itemChat => {
+                  const isIAm = itemChat.data.sendBy === user.uid;
                   return (
                     <ChatItem
                       key={itemChat.id}
-                      isMe={itemChat.data.sendBy === user.uid}
+                      isMe={isIAm}
                       text={itemChat.data.chatContent}
                       date={itemChat.data.chatTime}
+                      photo={isIAm ? null : {uri: dataDoctor.data.photo}}
                     />
                   );
                 })}
